@@ -36,13 +36,26 @@ export default function VotePage() {
      const [otp, setOtp] = useState("");
 
      useEffect(() => {
+          // Restore state from sessionStorage on mount
+          const savedState = sessionStorage.getItem("voting_state");
+          if (savedState) {
+               const { stage, savedEmail } = JSON.parse(savedState);
+               if (stage === 'otp_input' && savedEmail) {
+                    setAuthStage('otp_input');
+                    setEmail(savedEmail);
+               }
+          }
           checkAuth();
      }, []);
 
      const checkAuth = async () => {
           const token = localStorage.getItem("token");
           if (!token) {
-               setAuthStage('email_input');
+               // Only force email input if we didn't just restore OTP state
+               const savedState = sessionStorage.getItem("voting_state");
+               if (!savedState) {
+                    setAuthStage('email_input');
+               }
                return;
           }
 
@@ -51,15 +64,18 @@ export default function VotePage() {
                const status = await api.getVoteStatus(token);
                if (status.hasVoted) {
                     setAuthStage('voted');
+                    sessionStorage.removeItem("voting_state"); // Clear state if voted
                } else {
                     const data = await api.getCandidates();
                     setCandidates(data);
                     setAuthStage('voting');
+                    sessionStorage.removeItem("voting_state"); // Clear state if authorized
                }
           } catch (err) {
                console.error(err);
                // If token invalid, clear it and go to email input
                localStorage.removeItem("token");
+               sessionStorage.removeItem("voting_state");
                setAuthStage('email_input');
           }
      };
@@ -75,7 +91,14 @@ export default function VotePage() {
                     console.log("DEV OTP:", res.devOtp);
                     alert(`DEV OTP: ${res.devOtp}`);
                }
+
+               // Persist state
                setAuthStage('otp_input');
+               sessionStorage.setItem("voting_state", JSON.stringify({
+                    stage: 'otp_input',
+                    savedEmail: email
+               }));
+
           } catch (err: any) {
                setError(err.message || "Gagal mengirim OTP");
           } finally {
@@ -93,6 +116,9 @@ export default function VotePage() {
           try {
                const res = await api.verifyOtp(email, tokenToVerify);
                localStorage.setItem("token", res.token);
+
+               // Clear session state on success
+               sessionStorage.removeItem("voting_state");
 
                if (res.user.has_voted) {
                     setAuthStage('voted');
@@ -198,7 +224,8 @@ export default function VotePage() {
                     <Card className="max-w-md w-full p-8 rounded-3xl shadow-2xl bg-white/80 backdrop-blur-sm border-blue-50">
                          <div className="text-center mb-8">
                               <h1 className="text-2xl font-bold text-slate-900 mb-2">Verifikasi OTP</h1>
-                              <p className="text-slate-500">Masukkan kode OTP yang dikirim ke <span className="font-semibold text-primary">{email}</span></p>
+                              <p className="text-slate-500 mb-2">Masukkan kode OTP yang dikirim ke <span className="font-semibold text-primary">{email}</span></p>
+                              <p className="text-xs text-slate-400 italic">Periksa folder Inbox atau Spam/Junk jika email tidak masuk.</p>
                          </div>
 
                          <div className="space-y-8">
@@ -230,7 +257,10 @@ export default function VotePage() {
                                    <Button
                                         type="button"
                                         variant="ghost"
-                                        onClick={() => setAuthStage('email_input')}
+                                        onClick={() => {
+                                             setAuthStage('email_input');
+                                             sessionStorage.removeItem("voting_state");
+                                        }}
                                         className="w-full text-slate-500 hover:text-slate-800"
                                    >
                                         Ganti Email
