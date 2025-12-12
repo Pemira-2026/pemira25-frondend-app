@@ -8,50 +8,105 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { api } from "@/lib/api";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { CheckCircle2, Loader2, Mail, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { OtpInput } from "@/components/ui/otp-input";
 
 interface Candidate {
      id: number | string;
      name: string;
      photo_url: string;
+     order_number: number;
+     vision: string;
+     mission: string;
 }
 
+type AuthStage = 'check_auth' | 'email_input' | 'otp_input' | 'voting' | 'voted';
+
 export default function VotePage() {
-     const [candidates, setCandidates] = useState<any[]>([]);
+     const [candidates, setCandidates] = useState<Candidate[]>([]);
      const [selectedId, setSelectedId] = useState<number | string | null>(null);
      const [isSubmitting, setIsSubmitting] = useState(false);
-     const [isSuccess, setIsSuccess] = useState(false);
-     const [isLoading, setIsLoading] = useState(true);
      const [error, setError] = useState("");
      const router = useRouter();
 
+     const [authStage, setAuthStage] = useState<AuthStage>('check_auth');
+     const [email, setEmail] = useState("");
+     const [otp, setOtp] = useState("");
+
      useEffect(() => {
-          // Auth Check
+          checkAuth();
+     }, []);
+
+     const checkAuth = async () => {
           const token = localStorage.getItem("token");
           if (!token) {
-               router.push("/login?redirect=/vote");
+               setAuthStage('email_input');
                return;
           }
 
-          // Check if already voted
-          api.getVoteStatus(token).then(status => {
+          try {
+               // Check status & fetch candidates
+               const status = await api.getVoteStatus(token);
                if (status.hasVoted) {
-                    setIsSuccess(true); // Show success/already voted screen
+                    setAuthStage('voted');
+               } else {
+                    const data = await api.getCandidates();
+                    setCandidates(data);
+                    setAuthStage('voting');
                }
-          });
-
-          // Fetch Candidates
-          api.getCandidates().then(data => {
-               setCandidates(data);
-               setIsLoading(false);
-          }).catch(err => {
+          } catch (err) {
                console.error(err);
-               setError("Gagal memuat kandidat. Pastikan backend berjalan.");
-               setIsLoading(false);
-          });
-     }, [router]);
+               // If token invalid, clear it and go to email input
+               localStorage.removeItem("token");
+               setAuthStage('email_input');
+          }
+     };
+
+     const handleRequestOtp = async (e: React.FormEvent) => {
+          e.preventDefault();
+          setIsSubmitting(true);
+          setError("");
+          try {
+               const res = await api.requestOtp(email);
+               // In dev mode, we might get the OTP back in response for ease
+               if (res.devOtp) {
+                    console.log("DEV OTP:", res.devOtp);
+                    alert(`DEV OTP: ${res.devOtp}`);
+               }
+               setAuthStage('otp_input');
+          } catch (err: any) {
+               setError(err.message || "Gagal mengirim OTP");
+          } finally {
+               setIsSubmitting(false);
+          }
+     };
+
+     const handleVerifyOtp = async (e?: React.FormEvent, otpValue?: string) => {
+          if (e) e.preventDefault();
+          const tokenToVerify = otpValue || otp;
+          if (!tokenToVerify || tokenToVerify.length !== 6) return;
+
+          setIsSubmitting(true);
+          setError("");
+          try {
+               const res = await api.verifyOtp(email, tokenToVerify);
+               localStorage.setItem("token", res.token);
+
+               if (res.user.has_voted) {
+                    setAuthStage('voted');
+               } else {
+                    const data = await api.getCandidates();
+                    setCandidates(data);
+                    setAuthStage('voting');
+               }
+          } catch (err: any) {
+               setError(err.message || "OTP Salah atau Kadaluarsa");
+          } finally {
+               setIsSubmitting(false);
+          }
+     };
 
      const handleVote = async () => {
           if (!selectedId) return;
@@ -59,18 +114,26 @@ export default function VotePage() {
           setIsSubmitting(true);
           try {
                const token = localStorage.getItem("token");
-               if (!token) throw new Error("No token");
+               if (!token) throw new Error("Sesi habis, silakan login ulang");
 
                await api.vote(selectedId.toString(), token);
-               setIsSuccess(true);
+               setAuthStage('voted');
           } catch (err: any) {
                alert(err.message || "Gagal memilih");
+               if (err.message?.includes('jwt') || err.message?.includes('token')) {
+                    localStorage.removeItem("token");
+                    setAuthStage('email_input');
+               }
           } finally {
                setIsSubmitting(false);
           }
      };
 
-     if (isSuccess) {
+     if (authStage === 'check_auth') {
+          return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin h-10 w-10 text-primary" /></div>;
+     }
+
+     if (authStage === 'voted') {
           return (
                <div className="container mx-auto px-4 py-32 text-center min-h-[60vh] flex items-center justify-center">
                     <motion.div
@@ -93,12 +156,90 @@ export default function VotePage() {
           );
      }
 
-     if (isLoading) {
-          return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin h-10 w-10 text-primary" /></div>;
+     if (authStage === 'email_input') {
+          return (
+               <div className="container mx-auto px-4 py-32 flex items-center justify-center min-h-[80vh]">
+                    <Card className="max-w-md w-full p-8 rounded-3xl shadow-2xl bg-white/80 backdrop-blur-sm border-blue-50">
+                         <div className="text-center mb-8">
+                              <h1 className="text-2xl font-bold text-slate-900 mb-2">Masuk untuk Memilih</h1>
+                              <p className="text-slate-500">Masukkan email yang terdaftar di sistem.</p>
+                         </div>
+
+                         <form onSubmit={handleRequestOtp} className="space-y-6">
+                              <div className="space-y-2">
+                                   <label className="text-sm font-medium text-slate-700 ml-1">Email</label>
+                                   <div className="relative">
+                                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                                        <input
+                                             type="email"
+                                             placeholder="email@student.nurulfikri.ac.id"
+                                             required
+                                             className="w-full h-12 pl-12 pr-4 rounded-xl border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                                             value={email}
+                                             onChange={(e) => setEmail(e.target.value)}
+                                        />
+                                   </div>
+                              </div>
+
+                              {error && <p className="text-red-500 text-sm text-center bg-red-50 p-2 rounded-lg">{error}</p>}
+
+                              <Button type="submit" className="w-full h-12 text-lg rounded-xl bg-primary hover:bg-primary-light" disabled={isSubmitting}>
+                                   {isSubmitting ? <Loader2 className="animate-spin" /> : "Kirim Kode OTP"}
+                              </Button>
+                         </form>
+                    </Card>
+               </div>
+          );
      }
 
-     if (error) {
-          return <div className="min-h-screen flex items-center justify-center text-red-500">{error}</div>;
+     if (authStage === 'otp_input') {
+          return (
+               <div className="container mx-auto px-4 py-32 flex items-center justify-center min-h-[80vh]">
+                    <Card className="max-w-md w-full p-8 rounded-3xl shadow-2xl bg-white/80 backdrop-blur-sm border-blue-50">
+                         <div className="text-center mb-8">
+                              <h1 className="text-2xl font-bold text-slate-900 mb-2">Verifikasi OTP</h1>
+                              <p className="text-slate-500">Masukkan kode OTP yang dikirim ke <span className="font-semibold text-primary">{email}</span></p>
+                         </div>
+
+                         <div className="space-y-8">
+                              <div className="flex justify-center">
+                                   <OtpInput
+                                        length={6}
+                                        value={otp}
+                                        onChange={(val) => {
+                                             setOtp(val);
+                                             if (error) setError(""); // Clear error on change
+                                        }}
+                                        onComplete={(val) => {
+                                             // Auto verify when complete
+                                             handleVerifyOtp(undefined, val);
+                                        }}
+                                        disabled={isSubmitting}
+                                   />
+                              </div>
+
+                              {isSubmitting && (
+                                   <div className="flex justify-center text-primary animate-pulse">
+                                        <Loader2 className="animate-spin mr-2" /> Verifikasi...
+                                   </div>
+                              )}
+
+                              {error && <p className="text-red-500 text-sm text-center bg-red-50 p-2 rounded-lg">{error}</p>}
+
+                              <div className="flex flex-col gap-3">
+                                   <Button
+                                        type="button"
+                                        variant="ghost"
+                                        onClick={() => setAuthStage('email_input')}
+                                        className="w-full text-slate-500 hover:text-slate-800"
+                                   >
+                                        Ganti Email
+                                   </Button>
+                              </div>
+                         </div>
+                    </Card>
+               </div>
+          );
      }
 
      return (
@@ -127,7 +268,6 @@ export default function VotePage() {
                               )}
                          >
                               <Card className="overflow-hidden h-full border-none shadow-xl shadow-slate-200/50 rounded-2xl bg-surface">
-                                   {/* Customized layout heavily to match single-photo backend limitation */}
                                    <div className="relative aspect-video bg-neutral-cream w-full overflow-hidden">
                                         <Image
                                              src={candidate.photo_url || "/placeholder.jpg"}

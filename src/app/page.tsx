@@ -146,6 +146,27 @@ export default function Home() {
                     </div>
                </section>
 
+               {/* Tutorial Section */}
+               <section className="container mx-auto px-4">
+                    <div className="text-center mb-16">
+                         <h2 className="text-3xl font-bold mb-4 text-slate-900">Tutorial Voting</h2>
+                         <p className="text-neutral-slate">Simak video panduan berikut untuk tata cara pemilihan</p>
+                    </div>
+                    <div className="max-w-4xl mx-auto">
+                         <div className="relative w-full pb-[56.25%] h-0 rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-slate-900">
+                              <iframe
+                                   src="https://www.youtube.com/embed/ym1GnhgPJ_g?si=CvfbcHRbP1tSIwsj"
+                                   title="YouTube video player"
+                                   frameBorder="0"
+                                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                   referrerPolicy="strict-origin-when-cross-origin"
+                                   allowFullScreen
+                                   className="absolute top-0 left-0 w-full h-full"
+                              ></iframe>
+                         </div>
+                    </div>
+               </section>
+
                {/* CTA Section */}
                <section className="container mx-auto px-4">
                     <div className="bg-primary rounded-[2.5rem] p-12 md:p-20 text-center text-white relative overflow-hidden">

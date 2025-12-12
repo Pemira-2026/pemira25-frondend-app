@@ -2,6 +2,7 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export const api = {
+
      login: async (nim: string, password: string) => {
           const res = await fetch(`${API_URL}/auth/login`, {
                method: 'POST',
@@ -10,6 +11,28 @@ export const api = {
           });
           if (!res.ok) throw new Error('Login failed');
           return res.json();
+     },
+
+     requestOtp: async (email: string) => {
+          const res = await fetch(`${API_URL}/auth/otp-request`, {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json' },
+               body: JSON.stringify({ email }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.message || 'Request OTP failed');
+          return data;
+     },
+
+     verifyOtp: async (email: string, otp: string) => {
+          const res = await fetch(`${API_URL}/auth/otp-verify`, {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json' },
+               body: JSON.stringify({ email, otp }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.message || 'Verify OTP failed');
+          return data;
      },
 
      getCandidates: async () => {
