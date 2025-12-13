@@ -13,14 +13,12 @@ export default function FloatingChat() {
           {
                label: 'Humas',
                icon: User,
-               // Placeholder number for Humas
                href: 'https://wa.me/6281234567890',
                color: 'bg-green-500 hover:bg-green-600',
           },
           {
                label: 'IT Support',
                icon: ShieldCheck,
-               // Placeholder number for IT Support
                href: 'https://wa.me/6280987654321',
                color: 'bg-blue-500 hover:bg-blue-600',
           },

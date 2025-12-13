@@ -63,8 +63,6 @@ export default function VoteView({ initialCandidates }: { initialCandidates: Can
                     setAuthStage('voted');
                     sessionStorage.removeItem("voting_state");
                } else {
-                    // Use initialCandidates instead of fetching again if available, strictly speaking we should trust the prop
-                    // but usually candidates don't change often.
                     if (candidates.length === 0) {
                          const data = await api.getCandidates();
                          setCandidates(data);

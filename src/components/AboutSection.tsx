@@ -79,7 +79,6 @@ export default function AboutSection() {
                                    </motion.div>
                               )
                          })}
-                         {/* Decorative Card / Image Placeholder or just empty space handled by grid */}
                          <motion.div
                               initial={{ opacity: 0, scale: 0.9 }}
                               whileInView={{ opacity: 1, scale: 1 }}

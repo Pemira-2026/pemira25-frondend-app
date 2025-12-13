@@ -2,10 +2,9 @@
 import { api } from "@/lib/api";
 import CandidatesView from "@/components/CandidatesView";
 
-export const revalidate = 60; // ISR: Cache for 60 seconds
+export const revalidate = 60;
 
 export default async function CandidatesPage() {
-     // Fetch data on the server
      let candidatesData = [];
      try {
           const data = await api.getCandidates({ next: { revalidate: 60 } });
@@ -29,7 +28,6 @@ export default async function CandidatesPage() {
           })).sort((a: any, b: any) => a.id - b.id);
      } catch (err) {
           console.error("Failed to fetch candidates:", err);
-          // Handle error gracefully, maybe show empty state or error message handled in View if needed
      }
 
      return <CandidatesView candidatesData={candidatesData} />;

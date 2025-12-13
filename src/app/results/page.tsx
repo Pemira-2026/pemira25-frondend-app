@@ -1,7 +1,7 @@
 import { api } from "@/lib/api";
 import ResultsView from "@/components/ResultsView";
 
-export const revalidate = 60; // ISR
+export const revalidate = 60;
 
 export default async function ResultsPage() {
      let results = [];

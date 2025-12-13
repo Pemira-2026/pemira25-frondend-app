@@ -85,13 +85,11 @@ export function OtpInput({
           if ((e.key === "Backspace" || e.key === "Delete")) {
                e.preventDefault();
 
-               // If current input has a value, delete it
                if (valueItems[index]) {
                     const nextValueItems = [...valueItems];
                     nextValueItems[index] = "";
                     onChange(nextValueItems.join(""));
                } else {
-                    // If current input is empty, move back and delete previous
                     if (index > 0) {
                          const nextValueItems = [...valueItems];
                          nextValueItems[index - 1] = "";
