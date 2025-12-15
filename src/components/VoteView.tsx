@@ -494,7 +494,7 @@ export default function VoteView({ initialCandidates }: { initialCandidates: Can
                     <DialogContent aria-description="" className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white p-0 overflow-hidden rounded-2xl">
                          <div className="grid md:grid-cols-2 h-full">
                               {/* Left Column: Image & Basic Info */}
-                              <div className="relative bg-neutral-100 md:h-full h-[350px] md:h-full md:min-h-[400px]">
+                              <div className="relative bg-neutral-100 md:h-full h-87.5 md:min-h-100">
                                    <Image
                                         src={viewCandidate?.photoUrl || "https://placehold.co/800x1000/png"}
                                         alt={viewCandidate?.name || "Candidate"}

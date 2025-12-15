@@ -1,26 +1,42 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
+const navItems = [
+     { name: "Beranda", path: "/" },
+     { name: "Kandidat", path: "/candidates" },
+     { name: "Vote", path: "/vote" },
+     { name: "Hasil", path: "/results" },
+];
+
 export default function Navbar() {
      const pathname = usePathname();
+     const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, opacity: 0 });
+     const itemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
 
-     const navItems = [
-          { name: "Beranda", path: "/" },
-          { name: "Kandidat", path: "/candidates" },
-          { name: "Vote", path: "/vote" },
-          { name: "Hasil", path: "/results" },
-     ];
+     useEffect(() => {
+          const activeIndex = navItems.findIndex((item) => item.path === pathname);
+          const el = itemRefs.current[activeIndex];
+
+          if (el) {
+               setPillStyle({
+                    left: el.offsetLeft,
+                    width: el.offsetWidth,
+                    opacity: 1,
+               });
+          } else {
+               setPillStyle((prev) => ({ ...prev, opacity: 0 }));
+          }
+     }, [pathname]);
 
      return (
           <div className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
                <motion.nav
-                    initial={{ y: -100, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
                     className="bg-white/80 backdrop-blur-md border border-white/20 shadow-lg rounded-full px-6 py-3 flex items-center gap-2 md:gap-8"
                >
                     <Link href="/" className="font-bold text-primary mr-2 md:mr-4 flex items-center gap-2">
@@ -28,26 +44,28 @@ export default function Navbar() {
                          <span className="hidden md:inline">PEMIRA</span>
                     </Link>
 
-                    <div className="flex items-center gap-1 bg-neutral-cream/50 p-1 rounded-full">
-                         {navItems.map((item) => {
+                    <div className="relative flex items-center gap-1 bg-neutral-cream/50 p-1 rounded-full">
+                         {/* Animated Pill */}
+                         <motion.div
+                              className="absolute top-1 bottom-1 bg-primary rounded-full z-0"
+                              initial={false}
+                              animate={pillStyle}
+                              transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                         />
+
+                         {navItems.map((item, index) => {
                               const isActive = pathname === item.path;
                               return (
                                    <Link
                                         key={item.path}
                                         href={item.path}
+                                        ref={(el) => { itemRefs.current[index] = el; }}
                                         className={cn(
                                              "relative px-4 py-2 rounded-full text-sm font-medium transition-colors z-10",
                                              isActive ? "text-white" : "text-neutral-slate hover:text-primary"
                                         )}
                                    >
-                                        {isActive && (
-                                             <motion.div
-                                                  layoutId="nav-pill"
-                                                  className="absolute inset-0 bg-primary rounded-full -z-10"
-                                                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                             />
-                                        )}
-                                        <span className="relative z-10">{item.name}</span>
+                                        {item.name}
                                    </Link>
                               );
                          })}
