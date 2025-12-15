@@ -10,34 +10,34 @@ import { motion } from "framer-motion";
 
 export default function LandingView({ stats }: { stats: { totalVoters: number; votesCast: number; turnout: string } }) {
      return (
-          <div className="flex flex-col gap-24 pb-24">
+          <div className="flex flex-col gap-16 md:gap-24 pb-24">
                {/* Hero Section */}
-               <section className="relative pt-20 md:pt-32 px-4 text-center pb-8 overflow-hidden">
+               <section id="hero" className="relative pt-24 px-4 text-center pb-8 overflow-hidden">
                     <motion.div
                          initial={{ opacity: 0, y: 20 }}
                          animate={{ opacity: 1, y: 0 }}
                          transition={{ duration: 0.8 }}
                          className="max-w-4xl mx-auto z-10 relative"
                     >
-                         <div className="inline-block mb-4 px-4 py-1.5 rounded-full bg-white/50 text-primary text-sm font-bold tracking-wide border border-primary/10">
+                         <div className="inline-block mb-4 px-4 py-1.5 rounded-full bg-white/50 text-primary text-xs md:text-sm font-bold tracking-wide border border-primary/10">
                               PEMIRA STTNF 2025
                          </div>
-                         <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-slate-900 leading-tight">
+                         <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold mb-4 md:mb-6 tracking-tight text-slate-900 leading-tight">
                               Suaramu Menentukan <br />
                               <span className="text-primary">Masa Depan Kampus</span>
                          </h1>
-                         <p className="text-xl text-neutral-slate mb-10 max-w-2xl mx-auto leading-relaxed">
+                         <p className="text-base md:text-xl text-neutral-slate mb-8 md:mb-10 max-w-2xl mx-auto leading-relaxed">
                               Mari wujudkan demokrasi yang jujur, adil, dan transparan.
                               Gunakan hak pilihmu untuk STT Terpadu Nurul Fikri yang lebih baik.
                          </p>
-                         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                              <Link href="/vote">
-                                   <Button size="lg" className="rounded-full text-lg h-14 px-8 bg-primary hover:bg-primary-light shadow-lg shadow-primary/20 transition-all hover:scale-105">
-                                        Vote Sekarang <ChevronRight className="ml-2 h-5 w-5" />
+                         <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center">
+                              <Link href="/vote" className="w-full sm:w-auto">
+                                   <Button size="lg" className="w-full sm:w-auto rounded-full text-base md:text-lg h-12 md:h-14 px-8 bg-primary hover:bg-primary-light shadow-lg shadow-primary/20 transition-all hover:scale-105">
+                                        Vote Sekarang <ChevronRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
                                    </Button>
                               </Link>
-                              <Link href="/candidates">
-                                   <Button size="lg" variant="ghost" className="rounded-full text-lg h-14 px-8 text-neutral-slate hover:text-primary hover:bg-white/50">
+                              <Link href="/candidates" className="w-full sm:w-auto">
+                                   <Button size="lg" variant="ghost" className="w-full sm:w-auto rounded-full text-base md:text-lg h-12 md:h-14 px-8 text-neutral-slate hover:text-primary hover:bg-white/50">
                                         Lihat Kandidat
                                    </Button>
                               </Link>
@@ -45,12 +45,11 @@ export default function LandingView({ stats }: { stats: { totalVoters: number; v
                     </motion.div>
 
                     {/* Background Elements */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-white/30 rounded-full blur-3xl -z-10 opacity-60 pointer-events-none" />
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-250 h-150 bg-white/30 rounded-full blur-3xl -z-10 opacity-60 pointer-events-none" />
                </section>
 
-
                {/* Stats Section */}
-               <section className="container mx-auto px-4">
+               <section id="stats" className="container mx-auto px-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                          <motion.div
                               initial={{ opacity: 0, y: 20 }}
@@ -110,7 +109,7 @@ export default function LandingView({ stats }: { stats: { totalVoters: number; v
                <AboutSection />
 
                {/* Timeline Section */}
-               <section className="container mx-auto px-4">
+               <section id="timeline" className="container mx-auto px-4">
                     <div className="text-center mb-16">
                          <h2 className="text-3xl font-bold mb-4 text-slate-900">Jadwal PEMIRA</h2>
                          <p className="text-neutral-slate">Catat tanggal-tanggal penting berikut ini</p>
@@ -136,7 +135,7 @@ export default function LandingView({ stats }: { stats: { totalVoters: number; v
                </section>
 
                {/* Tutorial Section */}
-               <section className="container mx-auto px-4">
+               <section id="tutorial" className="container mx-auto px-4">
                     <div className="text-center mb-16">
                          <h2 className="text-3xl font-bold mb-4 text-slate-900">Tutorial Voting</h2>
                          <p className="text-neutral-slate">Simak video panduan berikut untuk tata cara pemilihan</p>
@@ -156,24 +155,6 @@ export default function LandingView({ stats }: { stats: { totalVoters: number; v
                     </div>
                </section>
 
-               {/* CTA Section */}
-               <section className="container mx-auto px-4">
-                    <div className="bg-primary rounded-[2.5rem] p-12 md:p-20 text-center text-white relative overflow-hidden">
-                         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                         <div className="relative z-10 max-w-2xl mx-auto">
-                              <h2 className="text-4xl font-bold mb-6">Jangan Golput!</h2>
-                              <p className="text-blue-100 mb-10 text-lg leading-relaxed">
-                                   Satu suara anda sangat berarti untuk kemajuan kampus kita tercinta.
-                                   Gunakan hak pilih anda dengan bijak sekarang juga.
-                              </p>
-                              <Link href="/vote">
-                                   <Button size="lg" className="bg-secondary text-primary hover:bg-secondary-hover font-bold h-14 px-10 rounded-full text-lg shadow-xl shadow-black/10">
-                                        Mulai Voting
-                                   </Button>
-                              </Link>
-                         </div>
-                    </div>
-               </section>
           </div>
      );
 }

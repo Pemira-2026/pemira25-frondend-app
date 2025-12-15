@@ -36,14 +36,14 @@ export default function ResultsView({ initialResults, initialStats }: ResultsVie
      }, []);
 
      return (
-          <div className="container mx-auto px-4 py-24">
+          <div className="container mx-auto px-4 py-10 pb-20">
                <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-center mb-16"
+                    className="text-center mb-10"
                >
-                    <h1 className="text-4xl font-bold mb-6 text-slate-900">Hasil Sementara PEMIRA</h1>
-                    <p className="text-slate-500">
+                    <h1 className="text-2xl md:text-4xl font-bold mb-4 md:mb-6 text-slate-900">Hasil Sementara PEMIRA</h1>
+                    <p className="text-slate-500 text-sm md:text-base">
                          Data diperbarui secara real-time.
                     </p>
                </motion.div>
@@ -58,7 +58,7 @@ export default function ResultsView({ initialResults, initialStats }: ResultsVie
                               <CardHeader>
                                    <CardTitle className="text-slate-900">Perolehan Suara</CardTitle>
                               </CardHeader>
-                              <CardContent className="h-[350px]">
+                              <CardContent className="h-87.5">
                                    <ResponsiveContainer width="100%" height="100%">
                                         <BarChart data={results}>
                                              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
@@ -88,7 +88,7 @@ export default function ResultsView({ initialResults, initialStats }: ResultsVie
                               <CardHeader>
                                    <CardTitle className="text-slate-900">Persentase Suara</CardTitle>
                               </CardHeader>
-                              <CardContent className="h-[350px]">
+                              <CardContent className="h-87.5">
                                    <ResponsiveContainer width="100%" height="100%">
                                         <PieChart>
                                              <Pie

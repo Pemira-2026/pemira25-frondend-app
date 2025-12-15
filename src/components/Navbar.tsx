@@ -37,6 +37,9 @@ export default function Navbar() {
      return (
           <div className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
                <motion.nav
+                    initial={{ y: -100, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.5 }}
                     className="bg-white/80 backdrop-blur-md border border-white/20 shadow-lg rounded-full px-6 py-3 flex items-center gap-2 md:gap-8"
                >
                     <Link href="/" className="font-bold text-primary mr-2 md:mr-4 flex items-center gap-2">
@@ -44,13 +47,13 @@ export default function Navbar() {
                          <span className="hidden md:inline">PEMIRA</span>
                     </Link>
 
-                    <div className="relative flex items-center gap-1 bg-neutral-cream/50 p-1 rounded-full">
+                    <div className="relative flex items-center gap-1 bg-neutral-cream/50 p-1 rounded-full overflow-x-auto max-w-70 md:max-w-none scrollbar-hide">
                          {/* Animated Pill */}
                          <motion.div
                               className="absolute top-1 bottom-1 bg-primary rounded-full z-0"
                               initial={false}
                               animate={pillStyle}
-                              transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                              transition={{ type: "spring", bounce: 0.1, duration: 0.4 }}
                          />
 
                          {navItems.map((item, index) => {
@@ -61,7 +64,7 @@ export default function Navbar() {
                                         href={item.path}
                                         ref={(el) => { itemRefs.current[index] = el; }}
                                         className={cn(
-                                             "relative px-4 py-2 rounded-full text-sm font-medium transition-colors z-10",
+                                             "relative px-3 md:px-4 py-2 rounded-full text-xs md:text-sm font-medium transition-colors z-10 whitespace-nowrap",
                                              isActive ? "text-white" : "text-neutral-slate hover:text-primary"
                                         )}
                                    >

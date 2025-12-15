@@ -27,7 +27,7 @@ export default function AboutSection() {
      ];
 
      return (
-          <section className="container mx-auto px-4 py-12">
+          <section id="about" className="container mx-auto px-4 py-12">
                <div className="flex flex-col lg:flex-row gap-12 items-center">
                     {/* Left Side: Content */}
                     <motion.div
