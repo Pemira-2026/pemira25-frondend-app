@@ -57,7 +57,9 @@ export default function Navbar() {
                          />
 
                          {navItems.map((item, index) => {
-                              const isActive = pathname === item.path;
+                              const isActive = item.path === "/"
+                                   ? pathname === "/"
+                                   : pathname.startsWith(item.path);
                               return (
                                    <Link
                                         key={item.path}
