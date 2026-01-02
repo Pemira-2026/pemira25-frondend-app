@@ -42,7 +42,7 @@ export default function ResultsView({ initialResults, initialStats }: ResultsVie
                     animate={{ opacity: 1, y: 0 }}
                     className="text-center mb-10"
                >
-                    <h1 className="text-2xl md:text-4xl font-bold mb-4 md:mb-6 text-slate-900">Hasil Sementara PEMIRA</h1>
+                    <h1 className="text-2xl md:text-4xl font-bold mb-4 md:mb-6 text-slate-900">Hasil Sementara <span className="text-primary">PEMIRA</span></h1>
                     <p className="text-slate-500 text-sm md:text-base">
                          Data diperbarui secara real-time.
                     </p>
