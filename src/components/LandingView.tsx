@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { timeline } from "@/lib/data";
-import AboutSection from "@/components/AboutSection";
 import { Calendar, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -76,52 +75,159 @@ export default function LandingView({ stats }: { stats: { totalVoters: number; v
                     </div>
                </section>
 
-               {/* About Section */}
-               <AboutSection />
-
-               {/* Timeline Section */}
-               <section id="timeline" className="container mx-auto px-4">
-                    <div className="text-center mb-16">
-                         <h2 className="text-3xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight">Jadwal <span className="text-primary">PEMIRA</span></h2>
-                         <p className="text-lg text-slate-600 leading-relaxed">Catat tanggal-tanggal penting berikut ini</p>
+               {/* About & Timeline Section (User Requested Design) */}
+               <section id="about" className="container mx-auto px-4 py-8">
+                    <div className="mb-16 text-center max-w-3xl mx-auto">
+                         <h2 className="text-3xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight">
+                              Tentang <span className="text-primary">PEMIRA</span>
+                         </h2>
+                         <p className="text-lg text-slate-600 leading-relaxed">
+                              PEMIRA STT Terpadu Nurul Fikri merupakan sarana resmi pemilihan pimpinan mahasiswa yang menjunjung tinggi nilai demokrasi, integritas, dan transparansi demi masa depan kampus yang lebih baik.
+                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-5 gap-6 relative z-10">
-                         {timeline.map((item, index) => (
-                              <motion.div
-                                   key={index}
-                                   initial={{ opacity: 0, y: 30 }}
-                                   whileInView={{ opacity: 1, y: 0 }}
-                                   viewport={{ once: true }}
-                                   transition={{ delay: index * 0.1 }}
-                                   className="relative flex flex-col items-center text-center p-6 rounded-2xl bg-surface border border-slate-100 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"
-                              >
-                                   <div className="w-14 h-14 rounded-2xl bg-neutral-cream text-primary flex items-center justify-center mb-4 rotate-3 group-hover:rotate-6 transition-transform">
-                                        <Calendar className="h-7 w-7" />
+                    <div className="relative">
+                         {/* Mobile Vertical Line */}
+                         <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-primary -translate-x-1/2 md:hidden rounded-full"></div>
+
+                         <div className="grid grid-cols-1 md:grid-cols-5 gap-0 md:gap-6">
+                              {timeline.map((item, i) => {
+                                   const styles = [
+                                        { bg: "bg-blue-100" },
+                                        { bg: "bg-blue-200" },
+                                        { bg: "bg-orange-100" },
+                                        { bg: "bg-orange-200" }
+                                   ];
+                                   const style = styles[i % styles.length];
+                                   const isEven = i % 2 === 0;
+
+                                   return (
+                                        <div key={i} className={`
+                                             relative flex items-center md:flex-col md:h-full group
+                                             ${isEven ? 'flex-row' : 'flex-row-reverse'}
+                                             mb-8 md:mb-0
+                                        `}>
+                                             {/* Card Content */}
+                                             <div className={`
+                                                  w-[calc(50%-5px)] md:w-full
+                                                  ${isEven ? 'text-right pr-4 md:text-center md:pr-0' : 'text-left pl-4 md:text-center md:pl-0'}
+                                                  transition-all duration-300 z-10 md:h-full md:flex md:flex-col md:justify-center
+                                             `}>
+                                                  <div className={`${style.bg} w-full rounded-xl p-4 md:p-6 shadow-sm border border-white/50 hover:shadow-md transition-shadow`}>
+                                                       <h3 className="font-bold text-slate-800 text-sm md:text-base mb-1">{item.event}</h3>
+                                                       <p className="text-xs font-semibold text-slate-600 bg-white/40 inline-block px-2 py-0.5 rounded-md">{item.date}</p>
+                                                  </div>
+                                             </div>
+
+                                             {/* Center Dot (Mobile) & Connector (Desktop) */}
+                                             <div className={`
+                                                  absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+                                                  md:static md:translate-x-0 md:translate-y-0 md:w-full md:flex md:items-center md:justify-center md:-mt-3
+                                                  z-20
+                                             `}>
+                                                  {/* Desktop Connecting Line */}
+                                                  {i < timeline.length - 1 && (
+                                                       <div className="hidden md:block absolute top-1/2 left-1/2 w-[calc(100%+1.5rem)] h-2 -translate-y-1/2 z-0 bg-slate-600">
+                                                            <div className="w-full h-full bg-primary"></div>
+                                                       </div>
+                                                  )}
+
+                                                  {/* The Dot */}
+                                                  <div className={`w-4 h-4 rounded-full border-2 border-white shadow-sm z-20 md:relative ${style.bg.replace('bg-', 'bg-slate-400')}`}>
+                                                       <div className={`w-full h-full rounded-full ${style.bg.replace('bg-', 'text-') === 'text-white' ? 'bg-slate-500' : 'bg-current'}`}></div>
+                                                  </div>
+                                             </div>
+
+                                             {/* Mobile Spacer (to balance the flex row) */}
+                                             <div className="w-[calc(50%-20px)] md:hidden"></div>
+                                        </div>
+                                   );
+                              })}
+                         </div>
+                    </div>
+               </section >
+
+               {/* Tutorial Section (Redesigned) */}
+               <section id="tutorial" className="container mx-auto px-4 py-20">
+                    <div className="text-center max-w-3xl mx-auto mb-16">
+                         <h2 className="text-3xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight">
+                              Cara Melakukan <span className="text-primary">Voting</span>
+                         </h2>
+                         <p className="text-lg text-p leading-relaxed">
+                              Ikuti 4 langkah mudah berikut untuk menggunakan hak suaramu.
+                         </p>
+                    </div>
+
+                    {/* Step Cards with Illustration Style */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12 relative z-10">
+                         {[
+                              {
+                                   step: "1",
+                                   title: "Lihat Kandidat & Program",
+                                   desc: "Cermati visi, misi, dan program kerja yang diusung setiap kandidat.",
+                                   image: "/assets/list-tutorial/view-candidate.png",
+                                   color: "bg-green-50 text-green-600",
+                                   badge: "bg-green-600"
+                              },
+                              {
+                                   step: "2",
+                                   title: "Login & Verifikasi OTP",
+                                   desc: "Masuk menggunakan email kampus dan verifikasi kode OTP yang dikirimkan pada emailmu.",
+                                   image: "/assets/list-tutorial/login.png",
+                                   color: "bg-blue-50 text-blue-600",
+                                   badge: "bg-blue-600"
+                              },
+                              {
+                                   step: "3",
+                                   title: "Pilih Kandidat Favoritmu",
+                                   desc: "Tentukan pilihan terbaikmu dan tekan tombol pilih pada kandidat.",
+                                   image: "/assets/list-tutorial/select-candidate.png",
+                                   color: "bg-orange-50 text-orange-600",
+                                   badge: "bg-orange-500"
+                              },
+                              {
+                                   step: "4",
+                                   title: "Konfirmasi Pilihanmu",
+                                   desc: "Pastikan pilihanmu sudah benar sebelum mengirim suara.",
+                                   image: "/assets/list-tutorial/confirm.png",
+                                   color: "bg-blue-50 text-blue-800",
+                                   badge: "bg-blue-700"
+                              }
+                         ].map((item, index) => (
+                              <div key={index} className="bg-white rounded-3xl shadow-lg border border-slate-100 hover:-translate-y-2 transition-transform duration-300 h-full flex flex-col group overflow-hidden">
+                                   {/* Illustration Area (Full Bleed) */}
+                                   <div className={`w-full aspect-video relative ${item.color} flex items-center justify-center overflow-hidden`}>
+                                        <div className="w-full h-full relative">
+                                             <Image
+                                                  src={item.image}
+                                                  alt={item.title}
+                                                  fill
+                                                  className="object-cover"
+                                             />
+                                        </div>
+
+                                        {/* Step Badge */}
+                                        <div className={`absolute top-4 left-4 w-10 h-10 rounded-full ${item.badge} text-white flex items-center justify-center font-bold text-lg shadow-md border-2 border-white ring-2 ring-white/20 z-10`}>
+                                             {item.step}
+                                        </div>
                                    </div>
-                                   <h3 className="font-bold text-slate-900 mb-2">{item.event}</h3>
-                                   <p className="text-sm text-slate-500 font-medium bg-slate-50 px-3 py-1 rounded-full">{item.date}</p>
-                              </motion.div>
+
+                                   {/* Content */}
+                                   <div className="p-4 text-center flex-1 flex flex-col">
+                                        <h3 className="font-bold text-slate-900 text-lg mb-2 leading-tight flex items-center justify-center">
+                                             {item.title}
+                                        </h3>
+                                        <p className="text-sm text-slate-500 leading-relaxed">
+                                             {item.desc}
+                                        </p>
+                                   </div>
+                              </div>
                          ))}
                     </div>
-               </section>
 
-               {/* Tutorial Section */}
-               <section id="tutorial" className="container mx-auto px-4 py-20 bg-slate-50 rounded-[3rem] my-12">
-                    <div className="text-center max-w-3xl mx-auto mb-16">
-                         <motion.div
-                              initial={{ opacity: 0, y: 20 }}
-                              whileInView={{ opacity: 1, y: 0 }}
-                              viewport={{ once: true }}
-                              transition={{ duration: 0.6 }}
-                         >
-                              <h2 className="text-3xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight">
-                                   Cara <span className="text-primary">Voting</span>
-                              </h2>
-                              <p className="text-lg text-slate-600 leading-relaxed">
-                                   Simak video panduan berikut untuk memahami tata cara pemilihan yang benar, mudah, dan sah.
-                              </p>
-                         </motion.div>
+                    {/* Video Container (Optional Detail) */}
+                    <div className="text-center mb-8">
+                         <p className="text-slate-500 text-sm font-medium uppercase tracking-widest mb-4">— Atau tonton video selengkapnya —</p>
                     </div>
 
                     <motion.div
@@ -129,7 +235,7 @@ export default function LandingView({ stats }: { stats: { totalVoters: number; v
                          whileInView={{ opacity: 1, scale: 1 }}
                          viewport={{ once: true }}
                          transition={{ duration: 0.8 }}
-                         className="max-w-5xl mx-auto"
+                         className="max-w-4xl mx-auto"
                     >
                          {/* Browser Window Frame */}
                          <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-200/60 ring-1 ring-slate-900/5">
@@ -144,7 +250,7 @@ export default function LandingView({ stats }: { stats: { totalVoters: number; v
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
                                              <path fillRule="evenodd" d="M10 2c-1.716 0-3.408.106-5.07.31C3.806 2.45 3 3.414 3 4.517V17.25a.75.75 0 001.075.696l5.925-2.662 5.925 2.662a.75.75 0 001.075-.696V4.517c0-1.103-.806-2.068-1.93-2.207A41.403 41.403 0 0010 2z" clipRule="evenodd" />
                                         </svg>
-                                        pemira.nurulfikri.ac.id
+                                        panduan-pemira.mp4
                                    </div>
                               </div>
 
@@ -161,12 +267,8 @@ export default function LandingView({ stats }: { stats: { totalVoters: number; v
                                    ></iframe>
                               </div>
                          </div>
-
-                         {/* Glow Effect behind */}
-                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[110%] bg-primary/20 blur-[100px] -z-10 rounded-full opacity-50 pointer-events-none"></div>
                     </motion.div>
                </section>
-
           </div>
      );
 }
