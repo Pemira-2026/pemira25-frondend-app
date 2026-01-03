@@ -4,8 +4,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { timeline } from "@/lib/data";
-import { Calendar, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function LandingView({ stats }: { stats: { totalVoters: number; votesCast: number; turnout: string } }) {
@@ -109,7 +110,7 @@ export default function LandingView({ stats }: { stats: { totalVoters: number; v
                                         `}>
                                              {/* Card Content */}
                                              <div className={`
-                                                  w-[calc(50%-5px)] md:w-full
+                                                  w-[calc(50%-5px)] hover:-translate-y-2 md:w-full
                                                   ${isEven ? 'text-right pr-4 md:text-center md:pr-0' : 'text-left pl-4 md:text-center md:pl-0'}
                                                   transition-all duration-300 z-10 md:h-full md:flex md:flex-col md:justify-center
                                              `}>
@@ -268,6 +269,67 @@ export default function LandingView({ stats }: { stats: { totalVoters: number; v
                               </div>
                          </div>
                     </motion.div>
+               </section>
+
+               {/* FAQ Section */}
+               <section id="faq" className="container mx-auto px-4 pb-24 pt-10">
+                    <div className="text-center max-w-3xl mx-auto mb-12">
+                         <h2 className="text-3xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight">
+                              Tanya Jawab <span className="text-primary">Umum</span>
+                         </h2>
+                         <p className="text-lg text-slate-600 leading-relaxed">
+                              Jawaban untuk pertanyaan yang sering diajukan seputar PEMIRA.
+                         </p>
+                    </div>
+
+                    <div className="max-w-3xl mx-auto">
+                         <Accordion type="single" collapsible className="space-y-4">
+                              <AccordionItem value="item-1" className="border-0 shadow-sm bg-white rounded-2xl overflow-hidden px-2">
+                                   <AccordionTrigger className="text-left text-lg font-semibold text-slate-800 hover:text-primary hover:no-underline px-6">
+                                        Apa itu PEMIRA STT-NF?
+                                   </AccordionTrigger>
+                                   <AccordionContent className="text-slate-600 text-base leading-relaxed px-6 pb-6">
+                                        PEMIRA (Pemilihan Raya) STT-NF adalah pesta demokrasi mahasiswa untuk memilih Presiden Mahasiswa (Presma) dan Wakil Presiden Mahasiswa (Wapresma) periode selanjutnya. Ini adalah kesempatan bagimu untuk menentukan masa depan kampus.
+                                   </AccordionContent>
+                              </AccordionItem>
+
+                              <AccordionItem value="item-2" className="border-0 shadow-sm bg-white rounded-2xl overflow-hidden px-2">
+                                   <AccordionTrigger className="text-left text-lg font-semibold text-slate-800 hover:text-primary hover:no-underline px-6">
+                                        Siapa yang berhak memilih?
+                                   </AccordionTrigger>
+                                   <AccordionContent className="text-slate-600 text-base leading-relaxed px-6 pb-6">
+                                        Seluruh mahasiswa aktif STT Terpadu Nurul Fikri yang terdaftar pada semester berjalan berhak memberikan suaranya dalam PEMIRA. Pastikan status kemahasiswaanmu aktif.
+                                   </AccordionContent>
+                              </AccordionItem>
+
+                              <AccordionItem value="item-3" className="border-0 shadow-sm bg-white rounded-2xl overflow-hidden px-2">
+                                   <AccordionTrigger className="text-left text-lg font-semibold text-slate-800 hover:text-primary hover:no-underline px-6">
+                                        Bagaimana cara login untuk voting?
+                                   </AccordionTrigger>
+                                   <AccordionContent className="text-slate-600 text-base leading-relaxed px-6 pb-6">
+                                        Kamu bisa login menggunakan akun email mahasiswa STT-NF. Sistem akan mengirimkan kode OTP (One-Time Password) ke email tersebut sebagai verifikasi keamanan sebelum kamu bisa memberikan suara.
+                                   </AccordionContent>
+                              </AccordionItem>
+
+                              <AccordionItem value="item-4" className="border-0 shadow-sm bg-white rounded-2xl overflow-hidden px-2">
+                                   <AccordionTrigger className="text-left text-lg font-semibold text-slate-800 hover:text-primary hover:no-underline px-6">
+                                        Apakah pilihan saya bersifat rahasia?
+                                   </AccordionTrigger>
+                                   <AccordionContent className="text-slate-600 text-base leading-relaxed px-6 pb-6">
+                                        Ya, mutlak! Sistem kami menggunakan enkripsi untuk memastikan pilihanmu tersimpan secara anonim. Tidak ada yang bisa melihat siapa yang kamu pilih, bahkan panitia sekalipun. LUBER JURDIL!
+                                   </AccordionContent>
+                              </AccordionItem>
+
+                              <AccordionItem value="item-5" className="border-0 shadow-sm bg-white rounded-2xl overflow-hidden px-2">
+                                   <AccordionTrigger className="text-left text-lg font-semibold text-slate-800 hover:text-primary hover:no-underline px-6">
+                                        Kapan hasil pemilihan diumumkan?
+                                   </AccordionTrigger>
+                                   <AccordionContent className="text-slate-600 text-base leading-relaxed px-6 pb-6">
+                                        Hasil pemilihan akan diumumkan secara Real Count setelah periode voting ditutup, sesuai dengan jadwal yang tertera pada bagian Timeline di halaman ini. Pantau terus websitenya!
+                                   </AccordionContent>
+                              </AccordionItem>
+                         </Accordion>
+                    </div>
                </section>
           </div>
      );
