@@ -20,7 +20,20 @@ import {
      DialogHeader,
      DialogTitle,
      DialogTrigger,
+     DialogClose,
 } from "@/components/ui/dialog";
+import {
+     AlertDialog,
+     AlertDialogAction,
+     AlertDialogCancel,
+     AlertDialogContent,
+     AlertDialogDescription,
+     AlertDialogFooter,
+     AlertDialogHeader,
+     AlertDialogTitle,
+     AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { CheckCircle, Rocket } from "lucide-react";
 
 interface Candidate {
      id: number | string;
@@ -29,6 +42,7 @@ interface Candidate {
      orderNumber: number;
      vision: string;
      mission: string;
+     programs?: string[];
 }
 
 type AuthStage = 'check_auth' | 'email_input' | 'otp_input' | 'manual_otp' | 'voting' | 'voted';
@@ -36,6 +50,8 @@ type AuthStage = 'check_auth' | 'email_input' | 'otp_input' | 'manual_otp' | 'vo
 export default function VoteView({ initialCandidates }: { initialCandidates: Candidate[] }) {
      const [candidates, setCandidates] = useState<Candidate[]>(initialCandidates);
      const [selectedId, setSelectedId] = useState<number | string | null>(null);
+     const [viewCandidate, setViewCandidate] = useState<Candidate | null>(null);
+     const [showConfirmation, setShowConfirmation] = useState(false);
      const [isSubmitting, setIsSubmitting] = useState(false);
      const [error, setError] = useState("");
      const router = useRouter();
@@ -43,7 +59,6 @@ export default function VoteView({ initialCandidates }: { initialCandidates: Can
      const [authStage, setAuthStage] = useState<AuthStage>('check_auth');
      const [email, setEmail] = useState("");
      const [otp, setOtp] = useState("");
-     const [viewCandidate, setViewCandidate] = useState<Candidate | null>(null);
 
      useEffect(() => {
           const savedState = sessionStorage.getItem("voting_state");
@@ -150,9 +165,11 @@ export default function VoteView({ initialCandidates }: { initialCandidates: Can
                if (!token) throw new Error("Sesi habis, silakan login ulang");
 
                await api.vote(selectedId.toString(), token);
+               setShowConfirmation(false);
                setAuthStage('voted');
           } catch (err: any) {
                alert(err.message || "Gagal memilih");
+               setShowConfirmation(false);
                if (err.message?.includes('jwt') || err.message?.includes('token')) {
                     localStorage.removeItem("token");
                     setAuthStage('email_input');
@@ -179,7 +196,7 @@ export default function VoteView({ initialCandidates }: { initialCandidates: Can
                          </div>
                          <h2 className="text-3xl font-bold mb-4 text-slate-900">Terima Kasih!</h2>
                          <p className="text-neutral-slate mb-10 text-lg">
-                              Suara anda telah berhasil direkam. Terima kasih telah berpartisipasi dalam PEMIRA STTNF 2025.
+                              Suara anda telah berhasil direkam. Terima kasih telah berpartisipasi dalam <span className="font-bold">PEMIRA IM STTNF 2025-2026</span>.
                          </p>
                          <Button onClick={() => window.location.href = "/"} className="w-full h-12 text-lg rounded-full bg-primary hover:bg-primary-light">
                               Kembali ke Beranda
@@ -377,8 +394,8 @@ export default function VoteView({ initialCandidates }: { initialCandidates: Can
                     animate={{ opacity: 1, y: 0 }}
                     className="text-center mb-10"
                >
-                    <h1 className="text-2xl md:text-4xl font-bold mb-2 text-slate-900">Bilik Suara Digital</h1>
-                    <p className="text-neutral-slate text-lg">
+                    <h1 className="text-2xl md:text-4xl font-bold mb-2 text-slate-900">Bilik <span className="text-primary">Suara Digital</span></h1>
+                    <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
                          Silakan pilih salah satu pasangan calon di bawah ini.
                     </p>
                </motion.div>
@@ -473,22 +490,51 @@ export default function VoteView({ initialCandidates }: { initialCandidates: Can
                                    <Button
                                         size="lg"
                                         disabled={isSubmitting}
-                                        onClick={handleVote}
+                                        onClick={() => setShowConfirmation(true)}
                                         className="min-w-35 rounded-full bg-primary hover:bg-primary-light h-12"
                                    >
-                                        {isSubmitting ? (
-                                             <>
-                                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                  Mengirim...
-                                             </>
-                                        ) : (
-                                             "Kirim Suara"
-                                        )}
+                                        Kirim Suara
                                    </Button>
                               </div>
                          </motion.div>
                     )}
                </AnimatePresence>
+
+               <AlertDialog open={showConfirmation} onOpenChange={setShowConfirmation}>
+                    <AlertDialogContent className="rounded-3xl max-w-sm bg-white border-none shadow-2xl p-8">
+                         <div className="text-center mb-2">
+                              <div className="w-16 h-16 bg-blue-50 text-primary rounded-full flex items-center justify-center mx-auto mb-6 ring-8 ring-blue-50/50">
+                                   <CheckCircle className="w-8 h-8" />
+                              </div>
+                              <AlertDialogHeader>
+                                   <AlertDialogTitle className="text-xl font-bold text-slate-900 text-center">Konfirmasi Pilihan</AlertDialogTitle>
+                                   <AlertDialogDescription className="text-slate-600 text-center text-base mt-2">
+                                        Anda akan memilih Pasangan Calon <br />
+                                        <span className="font-bold text-primary text-lg">No. {candidates.find(c => c.id === selectedId)?.orderNumber}</span>
+                                        <span className="block mt-2 text-sm text-slate-500 font-normal">
+                                             Apakah anda yakin dengan pilihan ini?
+                                        </span>
+                                   </AlertDialogDescription>
+                              </AlertDialogHeader>
+                         </div>
+
+                         <AlertDialogFooter className="flex-col-reverse sm:flex-row gap-3 mt-6">
+                              <AlertDialogCancel className="w-full rounded-xl h-12 border-slate-200 hover:bg-slate-50 hover:text-slate-900 text-slate-600 font-medium m-0">
+                                   Batal
+                              </AlertDialogCancel>
+                              <AlertDialogAction
+                                   onClick={(e: React.MouseEvent) => {
+                                        e.preventDefault();
+                                        handleVote();
+                                   }}
+                                   className="w-full rounded-xl h-12 bg-primary hover:bg-primary-light font-bold text-white shadow-lg shadow-blue-200 m-0"
+                                   disabled={isSubmitting}
+                              >
+                                   {isSubmitting ? <Loader2 className="animate-spin" /> : "Ya, Pilih"}
+                              </AlertDialogAction>
+                         </AlertDialogFooter>
+                    </AlertDialogContent>
+               </AlertDialog>
 
                <Dialog open={!!viewCandidate} onOpenChange={(open) => !open && setViewCandidate(null)}>
                     <DialogContent aria-description="" className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white p-0 overflow-hidden rounded-2xl">
@@ -546,12 +592,41 @@ export default function VoteView({ initialCandidates }: { initialCandidates: Can
 
                                         <div className="bg-orange-50/50 p-5 rounded-2xl border border-orange-100">
                                              <h4 className="font-bold text-secondary mb-3 flex items-center gap-2 text-lg">
-                                                  <span className="p-1.5 bg-white rounded-lg shadow-sm"><CheckCircle2 className="w-4 h-4 text-secondary" /></span>
+                                                  <span className="p-1.5 bg-white rounded-lg shadow-sm"><CheckCircle className="w-4 h-4 text-secondary" /></span>
                                                   Misi
                                              </h4>
-                                             <p className="text-slate-700 leading-relaxed whitespace-pre-line text-sm md:text-base">
-                                                  {viewCandidate?.mission}
-                                             </p>
+                                             <ul className="grid gap-2">
+                                                  {viewCandidate?.mission.split('\n').map((m, i) => (
+                                                       <li key={i} className="flex items-start gap-3 text-slate-700 leading-relaxed text-sm md:text-base">
+                                                            <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-secondary shrink-0" />
+                                                            {m}
+                                                       </li>
+                                                  ))}
+                                             </ul>
+                                        </div>
+
+                                        {/* Flagship Programs Section */}
+                                        <div className="bg-blue-50/50 p-5 rounded-2xl border border-blue-100">
+                                             <h4 className="font-bold text-blue-600 mb-3 flex items-center gap-2 text-lg">
+                                                  <span className="p-1.5 bg-white rounded-lg shadow-sm"><Rocket className="w-4 h-4 text-blue-500" /></span>
+                                                  Program Unggulan
+                                             </h4>
+                                             {viewCandidate?.programs && viewCandidate.programs.length > 0 ? (
+                                                  <div className="grid gap-3">
+                                                       {viewCandidate.programs.map((program, i) => (
+                                                            <div key={i} className="flex items-start gap-3 bg-white p-3 rounded-xl border border-blue-100 shadow-sm">
+                                                                 <span className="shrink-0 w-6 h-6 rounded-md bg-blue-100 text-blue-600 font-bold flex items-center justify-center text-xs">
+                                                                      {i + 1}
+                                                                 </span>
+                                                                 <span className="text-slate-700 text-sm md:text-base">{program}</span>
+                                                            </div>
+                                                       ))}
+                                                  </div>
+                                             ) : (
+                                                  <div className="text-center py-4 text-slate-400 italic text-sm">
+                                                       Belum ada data program unggulan
+                                                  </div>
+                                             )}
                                         </div>
                                    </div>
 

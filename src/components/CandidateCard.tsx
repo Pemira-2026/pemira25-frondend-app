@@ -90,22 +90,30 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
                                         </div>
 
                                         {/* Left Side: Photo (Fixed on Desktop, Top on Mobile) */}
-                                        <div className="relative w-full md:w-5/12 h-64 md:h-auto bg-slate-100 shrink-0">
+                                        <div className="relative w-full md:w-5/12 h-64 md:h-auto bg-neutral-100 shrink-0">
                                              <Image
                                                   src={candidate.president.photo}
                                                   alt={`Pasangan Calon ${candidate.id} `}
                                                   fill
-                                                  className="object-cover object-top"
+                                                  className="object-cover"
                                              />
-                                             <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-slate-900/90 via-slate-900/50 to-transparent p-5 pt-32 text-white">
-                                                  <div className="flex justify-between items-end gap-4">
+                                             <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/90 via-black/50 to-transparent flex flex-col justify-end p-8 text-white">
+                                                  <div className="inline-block self-start px-3 py-1 bg-primary rounded-full text-xs font-bold mb-4 shadow-lg border border-white/20">
+                                                       Kandidat No. {candidate.id}
+                                                  </div>
+
+                                                  <div className="flex justify-between items-end gap-4 border-t border-white/20 pt-4">
                                                        <div className="text-left flex-1 min-w-0">
-                                                            <p className="text-slate-200 text-2xl uppercase font-bold tracking-wider mb-1">Presma</p>
-                                                            <p className="font-bold text-xl leading-tight truncate">{candidate.president.name}</p>
+                                                            <p className="text-white/80 text-xs uppercase font-medium mb-1">Ketua</p>
+                                                            <h2 className="text-xl font-bold leading-tight shadow-black drop-shadow-md">
+                                                                 {candidate.president.name}
+                                                            </h2>
                                                        </div>
                                                        <div className="text-right flex-1 min-w-0">
-                                                            <p className="text-slate-200 text-2xl uppercase font-bold tracking-wider mb-1">Wapresma</p>
-                                                            <p className="font-bold text-xl leading-tight truncate">{candidate.vicePresident.name}</p>
+                                                            <p className="text-white/80 text-xs uppercase font-medium mb-1">Wakil</p>
+                                                            <h2 className="text-xl font-bold leading-tight shadow-black drop-shadow-md">
+                                                                 {candidate.vicePresident.name}
+                                                            </h2>
                                                        </div>
                                                   </div>
                                              </div>

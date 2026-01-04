@@ -24,7 +24,8 @@ export default async function CandidatesPage() {
                     batch: '-'
                },
                vision: c.vision,
-               mission: c.mission.split('\n')
+               mission: c.mission.split('\n'),
+               programs: c.programs ? c.programs.split('\n') : []
           })).sort((a: any, b: any) => a.id - b.id);
      } catch (err) {
           console.error("Failed to fetch candidates:", err);
