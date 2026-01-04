@@ -22,7 +22,8 @@ export default function Navbar() {
 
      // Helper function for matching paths
      const isActiveLink = (itemPath: string, currentPath: string) => {
-          if (itemPath === "/") return currentPath === "/";
+          if (!currentPath) return false;
+          if (itemPath === "/") return currentPath === "/" || currentPath === "";
           return currentPath.startsWith(itemPath);
      };
 
@@ -97,7 +98,7 @@ export default function Navbar() {
                                         ref={(el) => { itemRefs.current[index] = el; }}
                                         className={cn(
                                              "relative px-3 md:px-4 py-2 rounded-full text-xs md:text-sm font-medium transition-colors z-10 whitespace-nowrap",
-                                             isActive ? "text-white" : "hover:text-primary"
+                                             isActive ? "text-white" : "text-foreground hover:text-primary"
                                         )}
                                    >
                                         {item.name}
