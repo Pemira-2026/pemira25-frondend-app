@@ -23,8 +23,10 @@ export default function Navbar() {
      // Helper function for matching paths
      const isActiveLink = (itemPath: string, currentPath: string) => {
           if (!currentPath) return false;
+          // Strict match for root to avoid partial match active state
           if (itemPath === "/") return currentPath === "/" || currentPath === "";
-          return currentPath.startsWith(itemPath);
+          // For other paths, ensure it's a proper subpath match
+          return currentPath === itemPath || currentPath.startsWith(`${itemPath}/`);
      };
 
      const activeIndex = navItems.findIndex((item) => isActiveLink(item.path, pathname));
@@ -98,7 +100,7 @@ export default function Navbar() {
                                         ref={(el) => { itemRefs.current[index] = el; }}
                                         className={cn(
                                              "relative px-3 md:px-4 py-2 rounded-full text-xs md:text-sm font-medium transition-colors z-10 whitespace-nowrap",
-                                             isActive ? "text-white" : "text-black hover:text-primary"
+                                             isActive ? "text-neutral-50!" : "text-slate-600 hover:text-primary"
                                         )}
                                    >
                                         {item.name}
