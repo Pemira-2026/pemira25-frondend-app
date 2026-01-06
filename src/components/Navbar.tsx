@@ -48,8 +48,41 @@ export default function Navbar() {
           // eslint-disable-next-line react-hooks/exhaustive-deps
      }, [pathname]);
 
+     // Adjust Navbar position based on AlertBanner
+     const navContainerRef = useRef<HTMLDivElement>(null);
+
+     useEffect(() => {
+          const updatePosition = () => {
+               if (!navContainerRef.current) return;
+               const bannerHeightVal = getComputedStyle(document.documentElement).getPropertyValue('--alert-banner-height');
+               const bannerHeight = parseFloat(bannerHeightVal) || 0;
+               const scrollY = window.scrollY;
+
+               // Logic: Initial top is 1.5rem (24px).
+               // If banner exists (height > 0), start at 1.5rem + bannerHeight.
+               // As we scroll, subtract scrollY from the banner part, clamping at 0.
+               const offset = Math.max(0, bannerHeight - scrollY);
+               navContainerRef.current.style.top = `calc(1.5rem + ${offset}px)`;
+          };
+
+          window.addEventListener('scroll', updatePosition);
+          window.addEventListener('resize', updatePosition);
+
+          // Observe changes to --alert-banner-height (set on html style)
+          const observer = new MutationObserver(updatePosition);
+          observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style'] });
+
+          updatePosition();
+
+          return () => {
+               window.removeEventListener('scroll', updatePosition);
+               window.removeEventListener('resize', updatePosition);
+               observer.disconnect();
+          };
+     }, []);
+
      return (
-          <div className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
+          <div ref={navContainerRef} className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 transition-[top] duration-100 ease-linear">
                <motion.nav
                     initial={{ y: -100, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
