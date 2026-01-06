@@ -49,19 +49,21 @@ export default function Navbar() {
      }, [pathname]);
 
      return (
-          <motion.nav
-               initial={{ y: -100 }}
-               animate={{ y: 0 }}
-               transition={{ duration: 0.4, ease: "easeOut" }}
-               className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-neutral-200 shadow-sm"
-          >
-               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
+          <div className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
+               <motion.nav
+                    initial={{ y: -100, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    className="w-full max-w-7xl bg-white/90 backdrop-blur-xl border border-white/20 shadow-lg rounded-full px-6 md:px-8 h-16 flex items-center justify-between"
+               >
+                    <div className="flex-1 flex justify-between items-center relative">
                          {/* Logo Section */}
                          <div className="shrink-0 flex items-center">
-                              <Link href="/" className="flex items-center gap-2">
-                                   <Image src="/pemira-logo.svg" alt="Logo" width={32} height={32} />
-                                   <span className="font-bold text-xl text-primary tracking-tight">PEMIRA</span>
+                              <Link href="/" className="flex items-center gap-2 group">
+                                   <div className="relative w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                                        <Image src="/pemira-logo.svg" alt="Logo" width={20} height={20} className="w-5 h-5 text-primary" />
+                                   </div>
+                                   <span className="font-bold text-xl text-slate-800 tracking-tight group-hover:text-primary transition-colors">PEMIRA</span>
                               </Link>
                          </div>
 
@@ -74,10 +76,10 @@ export default function Navbar() {
                                              key={item.path}
                                              href={item.path}
                                              className={cn(
-                                                  "px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200",
+                                                  "px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
                                                   isActive
-                                                       ? "text-primary bg-primary/5 font-semibold"
-                                                       : "text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50"
+                                                       ? "text-primary bg-primary/10 font-semibold"
+                                                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                                              )}
                                         >
                                              {item.name}
@@ -90,7 +92,7 @@ export default function Navbar() {
                          <div className="flex md:hidden" ref={menuRef}>
                               <button
                                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                                   className="p-2 rounded-md text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 focus:outline-hidden"
+                                   className="p-2 rounded-full text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-hidden transition-colors"
                               >
                                    {isMobileMenuOpen ? (
                                         <X className="h-6 w-6" />
@@ -106,10 +108,10 @@ export default function Navbar() {
                                              initial={{ opacity: 0, scale: 0.95, y: -10 }}
                                              animate={{ opacity: 1, scale: 1, y: 0 }}
                                              exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                                             transition={{ duration: 0.15 }}
-                                             className="absolute top-16 right-4 w-56 bg-white rounded-xl shadow-xl border border-neutral-100 ring-1 ring-black/5 overflow-hidden origin-top-right"
+                                             transition={{ duration: 0.15, ease: "easeOut" }}
+                                             className="absolute top-16 right-0 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 ring-1 ring-black/5 overflow-hidden origin-top-right z-50 p-2"
                                         >
-                                             <div className="py-2 flex flex-col">
+                                             <div className="flex flex-col space-y-1">
                                                   {navItems.map((item) => {
                                                        const isActive = isActiveLink(item.path, pathname);
                                                        return (
@@ -117,10 +119,10 @@ export default function Navbar() {
                                                                  key={item.path}
                                                                  href={item.path}
                                                                  className={cn(
-                                                                      "px-4 py-3 text-sm font-medium transition-colors hover:bg-neutral-50",
+                                                                      "px-4 py-2.5 rounded-xl text-sm font-medium transition-all",
                                                                       isActive
-                                                                           ? "text-primary bg-primary/5 border-l-4 border-primary pl-3"
-                                                                           : "text-neutral-600 border-l-4 border-transparent"
+                                                                           ? "text-primary bg-primary/10 font-semibold"
+                                                                           : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                                                                  )}
                                                             >
                                                                  {item.name}
@@ -133,7 +135,7 @@ export default function Navbar() {
                               </AnimatePresence>
                          </div>
                     </div>
-               </div>
-          </motion.nav>
+               </motion.nav>
+          </div>
      );
 }
